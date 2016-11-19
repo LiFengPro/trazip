@@ -1,0 +1,9 @@
+{% if hotels %}
+    <ul>
+    {% for hotel in hotels %}
+        <li>{{ hotel.name }}</li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No hotels found in city</p>
+{% endif %}
