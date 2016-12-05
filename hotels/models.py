@@ -1,9 +1,15 @@
 from django.db import models
 
-# Create your models here.
+class City(models.Model):
+    name = models.CharField(max_length=20)
+    ctrip_id = models.IntegerField()
+    chinese_name = models.CharField(max_length=20)
+
+
+
 class Hotel(models.Model):
     name = models.CharField(max_length=40)
-    city = models.CharField(max_length=10)
+    city = models.ForeignKey(City, on_delete=models.CASCADE)
     description = models.CharField(max_length=200)
     level = models.IntegerField()
 
