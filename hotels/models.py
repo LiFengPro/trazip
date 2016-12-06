@@ -6,7 +6,6 @@ class City(models.Model):
     chinese_name = models.CharField(max_length=20)
 
 
-
 class Hotel(models.Model):
     name = models.CharField(max_length=40)
     city = models.ForeignKey(City, on_delete=models.CASCADE)

@@ -22,10 +22,12 @@ class CtripHotels(object):
     def get_cities(self):
         """ Get cities info from ctrip.com, recording city_id in this site.
 
-        Using api /Domestic/Tool/AjaxGetCitySuggestion.aspx to get info about cities.
+        Using api /Domestic/Tool/AjaxGetCitySuggestion.aspx to get info about
+        cities.
         Example response:
-            if (!cQuery.jsonpResponse) { cQuery.jsonpResponse = {}; } cQuery.jsonpResponse
-            .suggestion={热门:[{display:"北京",data:"Beijing|北京|1",group:"B"},...
+            if (!cQuery.jsonpResponse) { cQuery.jsonpResponse = {}; } cQuery.
+            jsonpResponse.suggestion={热门:[{display:"北京",
+            data:"Beijing|北京|1",group:"B"},...
         """
         city_suggestion_api = 'Domestic/Tool/AjaxGetCitySuggestion.aspx'
         response = requests.get(url=urljoin(self.base_url, city_suggestion_api))
@@ -51,12 +53,14 @@ class CtripHotels(object):
                 if match:
                     ctrip_id = match.group(1)
                 else:
-                    self.logger.critical('Fail to find ctrip_id of city {}'.format(chinese_name))
+                    self.logger.critical('Fail to find ctrip_id of city {}'
+                                         .format(chinese_name))
                 match = name_pattern_in_data.search(city['data'])
                 if match:
                     name = match.group(1)
                 else:
-                    self.logger.critical('Fail to find name of city {}'.format(chinese_name))
+                    self.logger.critical('Fail to find name of city {}'
+                                         .format(chinese_name))
 
                 city_dict = {
                     'name': name,
@@ -77,8 +81,8 @@ class CtripHotels(object):
         response = self._request_hotel_list(city_id=city_id, star=star)
         total_amount = response['hotelAmount']
         if counts >= total_amount:
-            self.logger.debug('Only {} hotels match all conditions, input {} exceeds.'
-                              .format(total_amount, counts))
+            self.logger.debug('Only {} hotels match all conditions, '
+                              'input {} exceeds.'.format(total_amount, counts))
             counts = total_amount
         elif counts == 0:
             counts = total_amount
@@ -87,7 +91,8 @@ class CtripHotels(object):
         for page in range(1, (counts-1)//25+2):
             time.sleep(3)
             self.logger.debug('Downloading Page {}....'.format(page))
-            response = self._request_hotel_list(city_id=city_id, star=star, page=page)
+            response = self._request_hotel_list(
+                city_id=city_id, star=star, page=page)
             if len(response['hotelPositionJSON']) == 0:
                 break
             for hotel_detail in response['hotelPositionJSON']:
