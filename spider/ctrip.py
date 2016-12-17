@@ -138,8 +138,8 @@ class CtripHotels(object):
         Returns:
             callback token (str), starts with 'CAS'
         """
-        choices = string.ascii_letters
-        callback = ''.join([choices[random.randrange(0, 52)] for i in range(t)])
+        callback = ''.join(
+            [random.choice(string.ascii_letters) for i in range(t)])
         return 'CAS' + callback
 
     def __get_oceanball(self):
@@ -209,7 +209,7 @@ class CtripHotels(object):
         eleven_val = eleven.call('eleven')
         return eleven_val
 
-    def __request_rooms(self, city_id, hotel_id, checkin, checkout):
+    def __request_rooms(self, city_id, hotel_id, checkin, checkout, **kwargs):
         """ Request rooms info from ctrip.com.
 
         Args:
@@ -256,6 +256,12 @@ class CtripHotels(object):
             'startDate': checkin,
             'supplier': '',
         }
+
+        for key, value in kwargs:
+            if key in payload:
+                payload[key] == value
+            else:
+                raise KeyError('Unrecongnized param {}'.format(key))
 
         response = requests.get(
             url=urljoin(self.base_url, room_list_api),
@@ -328,7 +334,8 @@ class CtripHotels(object):
         raise Exception("Input date {} doesn't follow correct "
                         "format 'yyyy-mm-dd'.".format(date))
 
-    def get_rooms_and_prices(self, city_id, hotel_id, checkin, checkout):
+    def get_rooms_and_prices(self, city_id, hotel_id, checkin='', checkout='',
+                             **kwargs):
         """ Get all rooms info of specific hotel.
 
         Args:
@@ -337,10 +344,16 @@ class CtripHotels(object):
             checkin (str or date): check in date.
             checkout (str or date): check out date.
         """
+        if not checkin:
+            checkin = datetime.date.today()
+        if not checkout:
+            checkout = checkin + datetime.timedelta(days=1)
+
         checkin = self.__check_date_format(checkin)
         checkout = self.__check_date_format(checkout)
 
-        response = self.__request_rooms(city_id, hotel_id, checkin, checkout)
+        response = self.__request_rooms(city_id, hotel_id, checkin, checkout,
+                                        **kwargs)
         rooms = self.__parse_rooms(response)
         quoted_prices = self.__parse_quoted_prices(response)
         return (rooms, quoted_prices)

@@ -1,3 +1,5 @@
+import datetime
+
 from spider.ctrip import CtripHotels
 
 class TestCtrip(object):
@@ -17,4 +19,20 @@ class TestCtrip(object):
             assert False, 'Beijing is missing.'
 
     def test_get_rooms_and_prices(self):
-        pass
+        """ Verifies function get_rooms_and_prices is able to get room info
+        and price info for specific hotel.
+        """
+        today = datetime.date.today()
+        tomorrow = today + datetime.timedelta(days=1)
+        checkin = today.isoformat()
+        checkout = tomorrow.isoformat()
+        rooms, quoted_prices = CtripHotels().get_rooms_and_prices(
+            city_id=1, hotel_id=436187, checkin=today, checkout=checkout)
+        assert 'RoomID' in rooms[0]
+        assert rooms, 'Fail to find any room info'
+        for room in rooms:
+            assert room['RoomID'], 'Fail to find room id in {}'.format(room)
+
+        assert quoted_prices, 'Fail to find quoted prices info'
+        for price in quoted_prices:
+            assert price['price'], 'Fail to find price in {}'.format(price)
