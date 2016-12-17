@@ -317,6 +317,8 @@ class CtripHotels(object):
             date (str or datetime.date): input date.
         Returns:
             correct format date.
+        Raises:
+            Exception if input does not match the format.
         """
         if isinstance(date, datetime.date):
             return date.isoformat()

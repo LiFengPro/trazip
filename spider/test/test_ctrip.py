@@ -15,3 +15,6 @@ class TestCtrip(object):
                 break
         else:
             assert False, 'Beijing is missing.'
+
+    def test_get_rooms_and_prices(self):
+        pass
