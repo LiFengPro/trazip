@@ -3,3 +3,4 @@ lxml==3.*
 PyExecJS==1.*
 Django==1.*
 pytest==3.*
+schedule==0.*

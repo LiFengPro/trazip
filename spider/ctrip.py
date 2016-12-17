@@ -102,7 +102,7 @@ class CtripHotels(object):
             if len(response['hotelPositionJSON']) == 0:
                 break
             for hotel_detail in response['hotelPositionJSON']:
-                hotels_name.append(hotel_detail['name'])
+                hotels_name.append(hotel_detail)
         return hotels_name[0:counts]
 
     def _request_hotel_list(self, city_id='', page=1, star=0):

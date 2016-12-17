@@ -9,7 +9,11 @@ class Service(object):
         """Inits Service."""
         self.logger = logging.Logger('spider')
 
-    def update_cities_info_from_ctrip(self):
+
+class CtripService(Service):
+    """ All services supported scrapy from ctrip.com"""
+    def update_cities(self):
+        """Update all cities info in database."""
         cities = CtripHotels().get_cities()
         for city_data in cities:
             objs_in_db = City.objects.filter(ctrip_id=city_data['ctrip_id'])
@@ -31,3 +35,9 @@ class Service(object):
                     ctrip_id=city_data['ctrip_id'],
                     chinese_name=city_data['chinese_name'])
                 city_obj.save()
+
+    def update_hotels(self):
+        pass
+
+    def update_rooms_and_prices(self):
+        pass
