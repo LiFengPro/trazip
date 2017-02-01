@@ -5,6 +5,8 @@ class City(models.Model):
     ctrip_id = models.IntegerField()
     chinese_name = models.CharField(max_length=20)
 
+    def __repr__(self):
+        return '{}|{}|{}'.format(self.ctrip_id, self.name, self.chinese_name)
 
 class Hotel(models.Model):
     name = models.CharField(max_length=40)
@@ -12,7 +14,13 @@ class Hotel(models.Model):
     description = models.CharField(max_length=200)
     level = models.IntegerField()
     ctrip_id = models.IntegerField()
+    address = models.CharField(max_length=200)
+    rate = models.FloatField()
 
+    def __repr__(self):
+        return ("ctrip_id: {ctrip_id}\nname: {name}\nlevel: {}\naddress: {}\n"
+                .format(ctrip_id=ctrip_id, name=name, level=level,
+                        address=address))
 
 class Room(models.Model):
     hotel = models.ForeignKey(Hotel, on_delete=models.CASCADE)

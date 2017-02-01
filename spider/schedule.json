@@ -1,0 +1,7 @@
+{
+    "CtripService": {
+        "update_cities": ["day", ""],
+        "update_hotels": ["day", ""],
+        "update_rooms_and_prices": ["day", ""]
+    }
+}
