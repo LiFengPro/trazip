@@ -12,4 +12,4 @@ def home(request):
     context = {
         'city': city_1,
     }
-    return render(request, 'home.html', context)
+    return render(request, 'home/home.html', context)

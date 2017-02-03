@@ -10,6 +10,6 @@ In order to run the website in standalone mode for development purpose, please d
 1. `python manage.py makemigrations`
 2. `python manage.py migrate`
 3. `export DJANGO_SETTINGS_MODULE=trazip.settings`
-4. `export PYTHONPATH=/path/to/trazip`
+4. `export PYTHONPATH=`pwd``
 5. `python scripts/temp_spider.py`
 6. `python manage.py runserver`
