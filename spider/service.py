@@ -1,7 +1,7 @@
 import logging
 
 from spider.ctrip import CtripHotels
-from hotels.models import City, Hotel
+from foundation.models.city import City
 
 class Service(object):
 

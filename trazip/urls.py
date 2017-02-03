@@ -1,4 +1,4 @@
-"""flashtrip URL Configuration
+"""trazip URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/1.10/topics/http/urls/
@@ -17,6 +17,9 @@ from django.conf.urls import url, include
 from django.contrib import admin
 
 urlpatterns = [
-    url(r'^hotels/', include('hotels.urls')),
+    url(r'', include('frontier.urls')),
+    # url(r'^api/', include('foundation.urls')),
+    # url(r'^api/', include('hotel.urls')),
+    # url(r'^api/', include('travel.urls')),
     url(r'^admin/', admin.site.urls),
 ]
