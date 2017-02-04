@@ -1,12 +1,12 @@
-from django.conf import settings
-from oneclicktravel import settings as myapp_defaults
+# from django.conf import settings
+# from trazip import settings as myapp_defaults
 import django
 
-settings.configure(default_settings=myapp_defaults, DEBUG=True)
+# settings.configure(default_settings=myapp_defaults, DEBUG=True)
 django.setup()
 
-from spider.service import Service
+from spider.service import CtripService
 print('This scrip is used for production and testing.')
-Service().update_cities_info_from_ctrip()
+CtripService().update_cities()
 
 
