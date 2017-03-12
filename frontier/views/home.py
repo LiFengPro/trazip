@@ -3,6 +3,10 @@ from django.http import HttpResponse
 from django.http import Http404
 
 from foundation.models.city import City
+from hotel.models.hotel import Hotel
+from hotel.models.quotedprice import QuotedPrice
+from hotel.models.room import Room
+
 
 def home(request):
     try:
