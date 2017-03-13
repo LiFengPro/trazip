@@ -1,0 +1,51 @@
+version: '3'
+
+networks:
+  trazipnet:
+
+volumes:
+  db_data:
+
+services:
+  db:
+    image: postgres:9.6.2
+    networks:
+    - trazipnet
+    environment:
+    - POSTGRES_USER=trazip      # Username of Postgres
+    - POSTGRES_PASSWORD=trazip  # Password of Postgres
+                                # TODO(lifengpro): use docker secret.
+    - POSTGRES_DB=trazip        # Database name to create.
+    volumes:
+    - db_data:/var/lib/postgresql/data
+
+  nginx:
+    image: nginx:1.10
+    networks:
+    - trazipnet
+    volumes:
+    - ./configs/nginx/conf.d:/etc/nginx/conf.d
+    ports:
+    - "8000:80"
+    depends_on:
+    - web
+
+  web:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    depends_on:
+    - db
+    networks:
+    - trazipnet
+    volumes:
+    - .:/src
+    environment:
+    - DEBUG=true                # Use Debug mode or not.
+    - DATABASE_TYPE=postgres    # Type of db, choose from ['postgres', 'sqlite']
+    - POSTGRES_USER=trazip      # Username of Postgres, should be same as in db.
+    - POSTGRES_PASSWORD=trazip  # TODO(lifengpro): use docker secret.
+    - POSTGRES_DB=trazip        # Database name to use, should be same as in db.
+    - POSTGRES_HOST=db          # DB host, do not modify.
+    - POSTGRES_PORT=5432        # DB port, do not modify.
+    
