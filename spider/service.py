@@ -9,6 +9,12 @@ class Service(object):
         """Inits Service."""
         self.logger = logging.Logger('spider')
 
+    def check_database_is_clean(self):
+        """ Returns true if the database if in a clean state. """
+        if City.objects.count() > 0:
+            return False
+        else:
+            return True
 
 class CtripService(Service):
     """ All services supported scrapy from ctrip.com"""
@@ -35,6 +41,7 @@ class CtripService(Service):
                     ctrip_id=city_data['ctrip_id'],
                     chinese_name=city_data['chinese_name'])
                 city_obj.save()
+        return City.objects.count()
 
     def update_hotels(self):
         pass
