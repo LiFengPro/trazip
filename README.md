@@ -1,15 +1,35 @@
 # Trazip
 
 ## What is Trazip
-Trazip is trying to simplify the way to plan a trip. Get rid of comparing hotels price, deciding which view you'd like to visit or fly tickets. Just tell us the budget and time, we will handle rest part of it.
+Trazip is trying to simplify the way to plan a trip. Get rid of comparing hotels price, 
+deciding which view you'd like to visit or fly tickets. Just tell us the budget and time, 
+we will handle rest part of it.
 
 ## To developers
-In order to run the website in standalone mode for development purpose, please do following steps:
+Docker-compose is the recommended tool to deploy and test the website. 
 
-0. cd trazip home dir
-1. `python manage.py makemigrations`
-2. `python manage.py migrate`
-3. `export DJANGO_SETTINGS_MODULE=trazip.settings`
-4. `export PYTHONPATH=path/to/trazip`
-5. `python scripts/temp_spider.py`
-6. `python manage.py runserver`
+Prerequisites:
+1. Install docker. Read more about docker installation 
+* [for mac](https://docs.docker.com/docker-for-mac/install/)
+* [for windows](https://docs.docker.com/docker-for-windows/install/)
+
+2. Install docker-compose. Read more on [docker-compose installation](https://docs.docker.com/compose/install/)
+
+Command to run, just
+
+    # workdirs: /path/to/trazip
+    # build and pull images
+    docker-compose build
+    # start services
+    docker-compose up
+    # stop services
+    docker-compose down
+
+    # execute command in container.
+    docker ps | grep <image-name>   # to find out container id.
+    docker exec -it <container-name> bash   # to open a shell of container.
+
+Links:
+1. Docker tutorial. [A popular videa about docker](https://www.youtube.com/watch?v=UV3cw4QLJLs)
+
+
