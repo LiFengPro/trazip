@@ -23,10 +23,14 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'a83%-4-p+8gq!i2b8^3n3mnh8&2+hg6xt8irmvb6%2q3a^&*v7'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+envs = os.environ
 
-ALLOWED_HOSTS = []
+if envs.get('DEBUG') is not None and envs.get('DEBUG').lower() == 'false':
+    DEBUG = False
+else:
+    DEBUG = True
 
+ALLOWED_HOSTS = ['localhost', 'trazip.com', 'web']
 
 # Application definition
 
@@ -77,12 +81,24 @@ WSGI_APPLICATION = 'trazip.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+if DEBUG:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': envs.get('POSTGRES_DB') or 'trazip',
+            'USER': envs.get('POSTGRES_USER') or 'trazip',
+            'PASSWORD': envs.get('POSTGRES_PASSWORD'),
+            'HOST': envs.get('POSTGRES_HOST') or 'localhost',
+            'PORT': envs.get('POSTGRES_PORT') or 5432
+        }
+    }
 
 
 # Password validation
