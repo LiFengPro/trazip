@@ -48,4 +48,5 @@ services:
     - POSTGRES_DB=trazip        # Database name to use, should be same as in db.
     - POSTGRES_HOST=db          # DB host, do not modify.
     - POSTGRES_PORT=5432        # DB port, do not modify.
+    - SUPERUSER_PASSWORD=trazip # Password of Django super user.
     
