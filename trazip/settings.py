@@ -81,7 +81,8 @@ WSGI_APPLICATION = 'trazip.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
 
-if DEBUG:
+DATABASE_TYPE = envs.get('DATABASE_TYPE') or 'sqlite'
+if DATABASE_TYPE == 'sqlite':
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',

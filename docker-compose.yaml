@@ -40,7 +40,8 @@ services:
     volumes:
     - .:/src
     environment:
-    - DEBUG=false
+    - DEBUG=true
+    - DATABASE_TYPE=postgres
     - POSTGRES_USER=trazip
     - POSTGRES_PASSWORD=trazip
     - POSTGRES_DB=trazip
