@@ -2,6 +2,8 @@ import logging
 
 from spider.ctrip import CtripHotels
 from foundation.models.city import City
+from hotel.models.hotel import Hotel
+
 
 class Service(object):
 
@@ -18,33 +20,69 @@ class Service(object):
 
 class CtripService(Service):
     """ All services supported scrapy from ctrip.com"""
+
+    def __init__(self):
+        super().__init__()
+        self.ctrip_hotels_spider = CtripHotels()
+
+    def _delete_duplicate_objs(self, objs):
+        for obj in objs[1:]:
+            self.logger.ctitical('{} is duplicated and deleted'.format(obj))
+            obj.delete()
+        
+    def _update_objs(self, obj, new_data):
+        
+        for key, value in new_data.items():
+            if getattr(obj, key) != value:
+                self.logger.critical('obj {} attr {} is changing from {} to {}.'
+                    .format(obj, key, getattr(obj, key), value))
+                setattr(obj, key, value)
+            obj.save()
+
+
     def update_cities(self):
         """Update all cities info in database."""
-        cities = CtripHotels().get_cities()
+        cities = self.ctrip_hotels_spider.get_cities()
         for city_data in cities:
             objs_in_db = City.objects.filter(ctrip_id=city_data['ctrip_id'])
             if objs_in_db:
-                for obj in objs_in_db[1:]:
-                    self.logger.critical('{} is duplicated and deleted'
-                                         .format(obj))
-                    obj.delete()
-                if (objs_in_db[0].name != city_data['name'] or
-                    objs_in_db[0].chinese_name != city_data['chinese_name']):
-                    self.logger.critical('{} is changed to {}'.format(
-                        objs_in_db[0], city_data))
-                objs_in_db[0].name = city_data['name']
-                objs_in_db[0].chinese_name = city_data['chinese_name']
-                objs_in_db[0].save()
+                self._delete_duplicate_objs(objs_in_db)
+                self._update_objs(objs_in_db[0], city_data)
             else:
-                city_obj = City(
-                    name=city_data['name'],
-                    ctrip_id=city_data['ctrip_id'],
-                    chinese_name=city_data['chinese_name'])
+                city_obj = City(**city_data)
                 city_obj.save()
         return City.objects.count()
 
-    def update_hotels(self):
-        pass
+    def update_hotels(self, city_id='', star=0, counts=0):
+        """ Update hotels info based on data from hotels.ctrip.com.
+
+        Args:
+            city_id (int): city_id in ctrip.com.
+            star (int): Star of hotels, from 0 to 5
+            counts (int): Numbers of hotels to get.
+        """
+        city = City.objects.get(pk=city_id)
+        hotels = self.ctrip_hotels_spider.get_hotels(city_id, star, counts)
+        for hotel_raw_data in hotels:
+            hotel_data = {
+                'ctrip_id': int(hotel_raw_data['id']),
+                'address': hotel_raw_data['address'],
+                'name': hotel_raw_data['name'],
+                'level': star,
+                'city': city,
+                'rate': float(hotel_raw_data['score']),
+                'description': ''
+            }
+
+            objs_in_db = Hotel.objects.filter(ctrip_id=hotel_data['ctrip_id'])
+            if objs_in_db:
+                self._delete_duplicate_objs(objs_in_db)
+                self._update_objs(objs_in_db[0], hotel_data)
+            else:
+                hotel_obj = Hotel(**hotel_data)
+                hotel_obj.save()
+
+        return len(hotels)
 
     def update_rooms_and_prices(self):
         pass

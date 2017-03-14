@@ -95,7 +95,6 @@ class CtripHotels(object):
 
         hotels_name = []
         for page in range(1, (counts-1)//25+2):
-            time.sleep(3)
             self.logger.debug('Downloading Page {}....'.format(page))
             response = self._request_hotel_list(
                 city_id=city_id, star=star, page=page)
@@ -127,7 +126,11 @@ class CtripHotels(object):
             data=payload
         )
 
-        response = json.loads(response.text)
+        def repair(brokenjson):
+            invalid_escape = re.compile(r"\\([^a-z\s'\"])")
+            return invalid_escape.sub(r'; \1', brokenjson)
+
+        response = json.loads(repair(response.text))
         return response
 
     def __gen_callback_t(self, t):
