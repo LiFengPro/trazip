@@ -3,6 +3,8 @@ import logging
 from spider.ctrip import CtripHotels
 from foundation.models.city import City
 from hotel.models.hotel import Hotel
+from hotel.models.room import Room
+from hotel.models.quotedprice import QuotedPrice
 
 
 class Service(object):
@@ -29,9 +31,9 @@ class CtripService(Service):
         for obj in objs[1:]:
             self.logger.ctitical('{} is duplicated and deleted'.format(obj))
             obj.delete()
-        
+
     def _update_objs(self, obj, new_data):
-        
+
         for key, value in new_data.items():
             if getattr(obj, key) != value:
                 self.logger.critical('obj {} attr {} is changing from {} to {}.'
@@ -83,6 +85,42 @@ class CtripService(Service):
                 hotel_obj.save()
 
         return len(hotels)
+
+    def update_faked_rooms_and_prices(self):
+        """ Update faked rooms and prices of hotel.
+
+        For test purpose, this method will generate faked rooms and prices
+        for all existing hotels since getting price from ctrip.com is super
+        slow.
+        """
+
+        import random
+        random.seed(1234)
+        hotels = Hotel.objects.all()
+
+        room_names = ["大床房", "双人房", "总统套间", "商务大床房", "单人房"]
+
+        for hotel in hotels:
+            for room_name in room_names[0:random.randint(2, 5)]:
+                room_data = {
+                    'hotel': hotel,
+                    'name': room_name,
+                    'description': "",
+                    "ctrip_id": random.randrange(1000000)
+                }
+                room_obj = Room(**room_data)
+                room_obj.save()
+                price_obj = QuotedPrice(
+                    room = room_obj,
+                    link = 'http://ctrip.com/{hotel_id}/{room_id}/{rand}'
+                        .format(
+                            hotel_id = hotel.ctrip_id,
+                            room_id = room_obj.ctrip_id,
+                            rand = random.randrange(1000000)
+                        ),
+                    price = 100 + random.randrange(1000)
+                )
+                price_obj.save()
 
     def update_rooms_and_prices(self):
         pass

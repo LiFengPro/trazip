@@ -7,3 +7,7 @@ class Room(models.Model):
     name = models.CharField(max_length=20)
     description = models.CharField(max_length=200)
     ctrip_id = models.IntegerField()
+
+    def __repr__(self):
+        return ("room name: {}\nbelongs to hotel:\n{}\n"
+                .format(self.name, repr(self.hotel)))

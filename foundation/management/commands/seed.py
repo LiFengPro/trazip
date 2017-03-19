@@ -15,12 +15,20 @@ class Command(BaseCommand):
                 '{} cities were generated and saved.'.format(cities_cnt)
             ))
 
+            self.stdout.write(self.style.SUCCESS(
+                'Gathering hotels info from ctrip.com, it may take several '
+                'minutes.'
+            ))
             for city_id in [1, 3]:
                 for star in range(1, 6):
                     cnt = ctrip_service.update_hotels(city_id, star, 100)
                     self.stdout.write(self.style.SUCCESS(
                         '{} hotels were generated and saved.'.format(cnt)
                     ))
+            ctrip_service.update_faked_rooms_and_prices()
+            self.stdout.write(self.style.SUCCESS(
+                'all hotels have faked room and price.'
+            ))
         else:
             self.stderr.write(self.style.WARNING(
                 'Warning: Database is not clean. '
