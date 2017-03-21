@@ -34,6 +34,51 @@ ALLOWED_HOSTS = ['localhost', 'trazip.com', 'web']
 
 # Application definition
 
+#log configure
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+       'standard': {
+            'format': '%(asctime)s [%(threadName)s:%(thread)d] [%(name)s:%(lineno)d] [%(module)s:%(funcName)s] [%(levelname)s]- %(message)s'}  #日志格式 
+    },
+    'handlers': {
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': './log/debug.log',
+        },
+        'default': {
+            'level':'DEBUG',
+            'class':'logging.handlers.RotatingFileHandler',
+            'filename': './log/all.log',     #日志输出文件
+            'maxBytes': 1024*1024*5,                  #文件大小 
+            'backupCount': 5,                         #备份份数
+            'formatter':'standard',                   #使用哪种formatters日志格式
+        },
+        'error': {
+            'level':'ERROR',
+            'class':'logging.handlers.RotatingFileHandler',
+            'filename': './log/error.log',
+            'maxBytes':1024*1024*5,
+            'backupCount': 5,
+            'formatter':'standard',
+        },
+    },
+    'loggers': {
+        'django.request': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+        'trazip.frontier.test': {
+            'handlers': ['default', 'error'],
+            'level': 'DEBUG',
+            'propagate': True
+        }
+    },
+}
+
 INSTALLED_APPS = [
     'foundation.apps.FoundationConfig',
     'travel.apps.TravelConfig',
